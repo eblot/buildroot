@@ -12,6 +12,30 @@ tty1::respawn:/sbin/getty -L  tty1 0 vt100 # HDMI console' ${TARGET_DIR}/etc/ini
     sed -i 's/^console:/#console:/' ${TARGET_DIR}/etc/inittab
 fi
 
+if [ -e ${TARGET_DIR}/etc/init.d/S50sshd ]; then
+    grep -qE 'remount' ${TARGET_DIR}/etc/init.d/S50sshd || \
+    sed -e '/\/usr\/bin\/ssh-keygen \-A/i\\tif [ ! -e "/etc/ssh/ssh_host_rsa_key" ]; then\n \tmount \-o remount,rw \/' \
+        -e '/\/usr\/bin\/ssh-keygen \-A/a\\tmount \-o remount,ro \/\n\tfi' \
+        -i ${TARGET_DIR}/etc/init.d/S50sshd
+fi
+
+if [ -e ${TARGET_DIR}/etc/fstab ]; then
+    grep -qE '/config' ${TARGET_DIR}/etc/fstab || \
+    echo "/dev/mmcblk0p1   /config       ext4    rw,noauto   1   1" >> ${TARGET_DIR}/etc/fstab
+fi
+
+if [ -e ${TARGET_DIR}/etc/network/interfaces ]; then
+    grep -qE '^auto wlan0' ${TARGET_DIR}/etc/init.d/S50sshd || \
+    cat >>${TARGET_DIR}/etc/network/interfaces <<EOT
+
+auto wlan0
+iface wlan0 inet dhcp
+        pre-up wpa_supplicant -iwlan0 -c/etc/wpa_supplicant.conf -B
+        up iw wlan0 set power_save off
+        down killall wpa_supplicant
+EOT
+fi
+
 cat >>${TARGET_DIR}/etc/ssh/sshd_config  <<EOT
 # Very dangerous options to be removed as soon as dev. is completed
 PermitRootLogin yes
@@ -124,3 +148,8 @@ case "$1" in
 esac
 EOT
 chmod +x ${TARGET_DIR}/etc/init.d/S92inkradio
+
+mkdir -p ${TARGET_DIR}/config
+rm -f ${BINARIES_DIR}/config.ext4
+${HOST_DIR}/sbin/mkfs.ext4 -r 1 -N 0 -m 5 -L "config" -O ^64bit \
+    ${BINARIES_DIR}/config.ext4 "2M"

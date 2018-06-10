@@ -15,7 +15,7 @@ echo "Adding InkRadio overlay to config.txt."
 cat << __EOF__ >> "${BINARIES_DIR}/rpi-firmware/config.txt"
 
 # add support for InkRadio peripherals
-dtoverlay=hifiberry-digi-overlay
+dtoverlay=hifiberry-digi
 dtparam=i2c=on
 dtparam=i2s=on
 dtparam=spi=on
