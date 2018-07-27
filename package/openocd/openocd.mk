@@ -4,13 +4,13 @@
 #
 ################################################################################
 
-OPENOCD_VERSION = 0.10.0
-OPENOCD_SOURCE = openocd-$(OPENOCD_VERSION).tar.bz2
-OPENOCD_SITE = http://sourceforge.net/projects/openocd/files/openocd/$(OPENOCD_VERSION)
+OPENOCD_VERSION = nrf52-rpi-v0.10.0
+OPENOCD_SITE = https://github.com/eblot/openocd.git
+OPENOCD_SITE_METHOD = git
 OPENOCD_LICENSE = GPL-2.0+
 OPENOCD_LICENSE_FILES = COPYING
-# 0002-configure-enable-build-on-uclinux.patch patches configure.ac
 OPENOCD_AUTORECONF = YES
+OPENOCD_GIT_SUBMODULES = YES
 
 # The bundled jimtcl really wants to find a existing $CXX, so feed it
 # false when we do not have one.
@@ -22,6 +22,7 @@ OPENOCD_CONF_OPTS = \
 	--oldincludedir=$(STAGING_DIR)/usr/include \
 	--includedir=$(STAGING_DIR)/usr/include \
 	--disable-doxygen-html \
+	--disable-doxygen-pdf \
 	--with-jim-shared=no \
 	--disable-shared \
 	--enable-dummy \
@@ -114,11 +115,11 @@ HOST_OPENOCD_DEPENDENCIES = host-libftdi host-libusb host-libusb-compat
 # faking the date of the generated version.texi file, to make the
 # build system believe the documentation doesn't need to be
 # regenerated.
-define OPENOCD_FIX_VERSION_TEXI
-	touch -r $(@D)/doc/openocd.info $(@D)/doc/version.texi
-endef
-OPENOCD_POST_BUILD_HOOKS += OPENOCD_FIX_VERSION_TEXI
-HOST_OPENOCD_POST_BUILD_HOOKS += OPENOCD_FIX_VERSION_TEXI
+#define OPENOCD_FIX_VERSION_TEXI
+#	touch -r $(@D)/doc/openocd.info $(@D)/doc/version.texi
+#endef
+#OPENOCD_POST_BUILD_HOOKS += OPENOCD_FIX_VERSION_TEXI
+#HOST_OPENOCD_POST_BUILD_HOOKS += OPENOCD_FIX_VERSION_TEXI
 
 $(eval $(autotools-package))
 $(eval $(host-autotools-package))
