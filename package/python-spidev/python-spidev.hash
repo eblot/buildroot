@@ -1,3 +1,1 @@
-# md5 from https://pypi.python.org/pypi/spidev/json, sha256 locally computed
-md5	f601676f1bb48b9aa3b3897f95216365  spidev-3.2.tar.gz
-sha256	09d2b5122f0dd79910713a11f9a0020f71537224bf829916def4fffc0ea59456  spidev-3.2.tar.gz
+sha256	529b9465e054b9a74e6ac420d338e5833d9e6722422f70fa38b2d5b66e00fb85  python-spidev-3.3.tar.gz
