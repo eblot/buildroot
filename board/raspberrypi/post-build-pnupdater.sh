@@ -117,5 +117,5 @@ ${HOST_DIR}/sbin/mkfs.ext4 -r 1 -N 0 -m 5 -L "local" -O ^64bit \
 # 64M VFAT partition to store USB mass storage file (such as PN firmwares)
 mkdir -p ${TARGET_DIR}/usbms
 rm -f ${BINARIES_DIR}/usbms.vfat
-dd if=/dev/zero of=${BINARIES_DIR}/usbms.vfat bs=1024 count=64
-${HOST_DIR}/sbin/mkfs.vfat -n "PNUPDATER" ${BINARIES_DIR}/usbms.vfat
+dd if=/dev/zero of=${BINARIES_DIR}/usbms.vfat bs=1024 count=65536
+${HOST_DIR}/sbin/mkfs.vfat -n "PnUpdater" ${BINARIES_DIR}/usbms.vfat
