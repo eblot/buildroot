@@ -42,3 +42,6 @@ genimage                           \
 	--config "${GENIMAGE_CFG}"
 
 exit $?
+
+# Use pv -trbe output/images/sdcard.img | sudo dd of=/dev/sdd bs=64k oflag=sync
+# to flash (replace /dev/sdd with the actual MicroSD device)
