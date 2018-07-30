@@ -32,7 +32,6 @@ cat >${TARGET_DIR}/etc/init.d/S95pnupd  <<EOT
 #!/bin/sh
 
 # # Sanity checks
-# test -f /etc/mpd.conf || exit 0
 # 
 # start() {
 #     printf "Starting mpd: "
@@ -66,7 +65,7 @@ cat >${TARGET_DIR}/etc/init.d/S95pnupd  <<EOT
 EOT
 chmod +x ${TARGET_DIR}/etc/init.d/S95pnupd
 
-mkdir -p ${TARGET_DIR}/config
-rm -f ${BINARIES_DIR}/config.ext4
-${HOST_DIR}/sbin/mkfs.ext4 -r 1 -N 0 -m 5 -L "config" -O ^64bit \
-    ${BINARIES_DIR}/config.ext4 "2M"
+mkdir -p ${TARGET_DIR}/local
+rm -f ${BINARIES_DIR}/local.ext4
+${HOST_DIR}/sbin/mkfs.ext4 -r 1 -N 0 -m 5 -L "local" -O ^64bit \
+    ${BINARIES_DIR}/local.ext4 "512M"
