@@ -27,7 +27,7 @@ disable_overscan=1
 
 enable_uart=1
 
-# dtoverlay=
+dtoverlay=dwc2
 dtparam=spi=on
 dtdebug=1
 __EOF__
