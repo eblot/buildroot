@@ -8,7 +8,7 @@ if [ -e ${TARGET_DIR}/etc/inittab ]; then
     grep -qE '^tty1::' ${TARGET_DIR}/etc/inittab || \
     sed -i '/GENERIC_SERIAL/a\
 tty1::respawn:/sbin/getty -L  tty1 0 vt100 # HDMI console' ${TARGET_DIR}/etc/inittab
-    sed -i 's/^console::/#console::/' ${TARGET_DIR}/etc/inittab
+    # sed -i 's/^console::/#console::/' ${TARGET_DIR}/etc/inittab
 fi
 
 if [ -e ${TARGET_DIR}/etc/init.d/S50sshd ]; then
@@ -20,13 +20,13 @@ fi
 
 if [ -e ${TARGET_DIR}/etc/fstab ]; then
     grep -qE '/config' ${TARGET_DIR}/etc/fstab || \
-    echo "/dev/mmcblk0p2   /config       ext4    rw,noauto   1   1" >> ${TARGET_DIR}/etc/fstab
+    echo "/dev/mmcblk0p2   /local       ext4    rw,noauto   1   1" >> ${TARGET_DIR}/etc/fstab
 fi
 
-cat >>${TARGET_DIR}/etc/ssh/sshd_config  <<EOT
 # Dangerous option
-PermitRootLogin yes
-EOT
+sed -e "s/^#PermitRootLogin .*/PermitRootLogin yes//" -i "${TARGET_DIR}/etc/ssh/sshd_config"
+# Very unsafe option (dev. only, never use this in production)
+sed -e "s/^#PermitEmptyPasswords .*/PermitEmptyPasswords yes//" -i "${TARGET_DIR}/etc/ssh/sshd_config"
 
 cat >${TARGET_DIR}/etc/init.d/S95pnupd  <<EOT
 #!/bin/sh
