@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-OPENOCD_VERSION = nrf52-rpi-v0.10.0
+OPENOCD_VERSION = nrf52-rpi-lite-v0.10.0
 OPENOCD_SITE = https://github.com/eblot/openocd.git
 OPENOCD_SITE_METHOD = git
 OPENOCD_LICENSE = GPL-2.0+
@@ -25,7 +25,7 @@ OPENOCD_CONF_OPTS = \
 	--disable-doxygen-pdf \
 	--with-jim-shared=no \
 	--disable-shared \
-	--enable-dummy \
+	--disable-dummy \
 	--disable-werror
 
 # Rely on the Config.in options of each individual adapter selecting
