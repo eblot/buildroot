@@ -22,6 +22,9 @@ start() {
         tar xvf "${tarball}" -C /local && \
         (cd local && ln -s PnUpdater* pnupdater) \
         && echo "OK" || die "FAIL"
+    else
+        echo "No PnUpdater upgrade available"
+    fi
 }
 
 case "$1" in
