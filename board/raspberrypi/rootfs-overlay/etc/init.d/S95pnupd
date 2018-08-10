@@ -7,14 +7,13 @@ start() {
     start-stop-daemon --start --quiet --pidfile /var/run/pnupdater.pid \
         --background -m --exec python3 -- \
         /local/pnupdater/pnupd.py \
-            -d -vvv -l /var/log/pnupdater.log -r 0 -f \
+            -d -vvv -l /var/log/pnupdater.log -i rpi -f -p /usbms \
         && echo "OK" || echo "FAIL"
 }
 
 stop() {
     printf "Stopping PnUpdater: "
     start-stop-daemon --stop --quiet --pidfile /var/run/pnupdater.pid \
-        --signal \
         && echo "OK" || echo "FAIL"
 }
 

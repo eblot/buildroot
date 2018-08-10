@@ -11,7 +11,7 @@ start() {
 
 stop() {
     printf "Stopping USB MS: "
-    modprobe -r g_mass_storage \
+    modprobe -r g_acm_ms \
         && echo "OK" || echo "FAIL"
 }
 

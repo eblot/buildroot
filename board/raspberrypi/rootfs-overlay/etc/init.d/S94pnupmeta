@@ -2,7 +2,7 @@
 
 # Update the PN updater code
 
-start() {
+upgrade() {
     # unmounting/remounting the VFAT partition is the only safe way to
     # ensure the Linux kernel retrieves the actual data pushed from the
     # host. Moreover it may have been corrupted at any time from the host
@@ -22,14 +22,14 @@ start() {
         if [ $? -ne 0 ]; then
             echo "Invalid PnUpdater file ${name}" >&2
             mv "${tarball}" "${tarball}.error"
-            reboot
+            $1
         fi
         echo "Upgrading PnUpdater with: ${name}"
         (cd /local && rm -rf PnUpdater* pnupdater) && \
         gunzip -c "${tarball}" | tar xvf - -C /local && \
         (cd /local && ln -s PnUpdater* pnupdater)
         rm -f "${tarball}"
-        reboot
+        $1
     else
         echo "No PnUpdater upgrade available"
     fi
@@ -37,9 +37,10 @@ start() {
 
 case "$1" in
     start)
-        start
+        upgrade reboot
         ;;
     stop)
+        upgrade
         ;;
     restart)
         start
