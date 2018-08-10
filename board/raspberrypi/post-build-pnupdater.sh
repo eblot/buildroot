@@ -23,11 +23,11 @@ fi
 
 if [ -e ${TARGET_DIR}/etc/fstab ]; then
     # USB mass storage as VFAT
-    grep -qE '/usbfs' ${TARGET_DIR}/etc/fstab || \
-    echo "/dev/mmcblk0p2   /usbms       vfat    rw,sync   1   1" >> ${TARGET_DIR}/etc/fstab
+    grep -qE '/usbms' ${TARGET_DIR}/etc/fstab || \
+    echo "/dev/mmcblk0p2	/usbms	vfat	rw,nouto,sync	1	1" >> ${TARGET_DIR}/etc/fstab
     # Application partition as EXT4, should be mount as RO for production
     grep -qE '/local' ${TARGET_DIR}/etc/fstab || \
-    echo "/dev/mmcblk0p4   /local       ext4    rw   1   1" >> ${TARGET_DIR}/etc/fstab
+    echo "/dev/mmcblk0p4	/local	ext4	rw	1	1" >> ${TARGET_DIR}/etc/fstab
 fi
 
 # Dangerous option

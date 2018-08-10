@@ -4,7 +4,8 @@
 
 start() {
     printf "Starting USB MS: "
-    modprobe g_acm_ms file=/dev/mmcblk0p2 stall=0 iManufacturer=CXIgnited \
+    modprobe g_acm_ms file=/dev/mmcblk0p2 stall=0 \
+            removable=y iManufacturer=CXIgnited \
         && echo "OK" || echo "FAIL"
 }
 

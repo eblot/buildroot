@@ -2,26 +2,34 @@
 
 # Update the PN updater code
 
-# Die with an error message
-die() {
-    echo "" >&2
-    echo "$*" >&2
-    exit 1
-}
-
 start() {
+    # unmounting/remounting the VFAT partition is the only safe way to
+    # ensure the Linux kernel retrieves the actual data pushed from the
+    # host. Moreover it may have been corrupted at any time from the host
+    # if anything is locally changed on the VFAT (remove a successfully
+    # upgraded tarball or rename an invalid tarball), there is no other choice
+    # but to reboot as the host cannot be informed about the changes - and any
+    # further attempt may corrupt the VFAT anyway
+    echo "Checking/Fixing VFAT partition"
+    umount /usbms 2> /dev/null
+    bdev=$(grep usbms /etc/fstab | head -1 | awk '{ print $1; }')
+    /sbin/fsck.vfat -a "${bdev}"
+    mount /usbms
     tarball=$(ls -1 /usbms/PnUpdater*.tar.gz 2>/dev/null | head -1)
     if [ -n "${tarball}" ]; then
         name=$(basename ${tarball})
+        gunzip -c "${tarball}" | tar tvf - > /dev/null
+        if [ $? -ne 0 ]; then
+            echo "Invalid PnUpdater file ${name}" >&2
+            mv "${tarball}" "${tarball}.error"
+            reboot
+        fi
         echo "Upgrading PnUpdater with: ${name}"
-        # unmounting/remounting the VFAT partition is the only safe way to
-        # ensure the Linux kernel retrieves the actual data pushed from the
-        # host
-        (umount /usbms && mount /usbms) || die "Cannot sync VFAT"
-        (cd local && rm -rf PnUpdater* pnupdater) && \
-        tar xvf "${tarball}" -C /local && \
-        (cd local && ln -s PnUpdater* pnupdater) \
-        && echo "OK" || die "FAIL"
+        (cd /local && rm -rf PnUpdater* pnupdater) && \
+        gunzip -c "${tarball}" | tar xvf - -C /local && \
+        (cd /local && ln -s PnUpdater* pnupdater)
+        rm -f "${tarball}"
+        reboot
     else
         echo "No PnUpdater upgrade available"
     fi

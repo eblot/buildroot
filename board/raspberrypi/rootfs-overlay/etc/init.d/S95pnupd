@@ -14,7 +14,7 @@ start() {
 stop() {
     printf "Stopping PnUpdater: "
     start-stop-daemon --stop --quiet --pidfile /var/run/pnupdater.pid \
-        --signal
+        --signal \
         && echo "OK" || echo "FAIL"
 }
 
