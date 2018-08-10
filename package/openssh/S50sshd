@@ -10,7 +10,11 @@ umask 077
 
 start() {
 	# Create any missing keys
+	if [ ! -e "/etc/ssh/ssh_host_rsa_key" ]; then
+ 	mount -o remount,rw /
 	/usr/bin/ssh-keygen -A
+	mount -o remount,ro /
+	fi
 
 	printf "Starting sshd: "
 	/usr/sbin/sshd

@@ -1,0 +1,32 @@
+#!/bin/sh
+
+# Handle USB Mass Storage gadget
+
+start() {
+    printf "Starting USB MS: "
+    modprobe g_acm_ms file=/dev/mmcblk0p2 stall=0 iManufacturer=CXIgnited \
+        && echo "OK" || echo "FAIL"
+}
+
+stop() {
+    printf "Stopping USB MS: "
+    modprobe -r g_mass_storage \
+        && echo "OK" || echo "FAIL"
+}
+
+case "$1" in
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    restart|reload)
+        stop
+        sleep 1
+        start
+        ;;
+    *)
+        echo "Usage: $0 {start|stop|restart}"
+        exit 1
+esac

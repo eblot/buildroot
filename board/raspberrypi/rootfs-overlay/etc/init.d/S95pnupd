@@ -1,0 +1,36 @@
+#!/bin/sh
+
+# PnUpdater main application
+
+start() {
+    printf "Starting PnUpdater: "
+    start-stop-daemon --start --quiet --pidfile /var/run/pnupdater.pid \
+        --background -m --exec python3 -- \
+        /local/pnupdater/pnupd.py \
+            -d -vvv -l /var/log/pnupdater.log -r 0 -f \
+        && echo "OK" || echo "FAIL"
+}
+
+stop() {
+    printf "Stopping PnUpdater: "
+    start-stop-daemon --stop --quiet --pidfile /var/run/pnupdater.pid \
+        --signal
+        && echo "OK" || echo "FAIL"
+}
+
+case "$1" in
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    restart|reload)
+        stop
+        sleep 1
+        start
+        ;;
+    *)
+        echo "Usage: $0 {start|stop|restart}"
+        exit 1
+esac

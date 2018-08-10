@@ -1,0 +1,39 @@
+#!/bin/sh
+
+# Update the PN updater code
+
+# Die with an error message
+die() {
+    echo "" >&2
+    echo "$*" >&2
+    exit 1
+}
+
+start() {
+    tarball=$(ls -1 /usbms/PnUpdater*.tar.gz 2>/dev/null | head -1)
+    if [ -n "${tarball}" ]; then
+        name=$(basename ${tarball})
+        echo "Upgrading PnUpdater with: ${name}"
+        # unmounting/remounting the VFAT partition is the only safe way to
+        # ensure the Linux kernel retrieves the actual data pushed from the
+        # host
+        (umount /usbms && mount /usbms) || die "Cannot sync VFAT"
+        (cd local && rm -rf PnUpdater* pnupdater) && \
+        tar xvf "${tarball}" -C /local && \
+        (cd local && ln -s PnUpdater* pnupdater) \
+        && echo "OK" || die "FAIL"
+}
+
+case "$1" in
+    start)
+        start
+        ;;
+    stop)
+        ;;
+    restart)
+        start
+        ;;
+    *)
+        echo "Usage: $0 {start|stop|restart}"
+        exit 1
+esac
